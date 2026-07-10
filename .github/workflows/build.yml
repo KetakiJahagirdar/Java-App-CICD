@@ -1,4 +1,8 @@
-name: Build and Test
+permissions:
+  contents: read
+  packages: write
+
+name: Build and Push
 
 on:
   push:
@@ -7,11 +11,9 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -20,11 +22,22 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+
       - name: Make Maven Wrapper Executable
         run: chmod +x mvnw
 
       - name: Build
         run: ./mvnw clean package
 
-      - name: Docker Build
-        run: docker build -t payment-service .
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ghcr.io/${{ github.actor }}/payment-service:latest
