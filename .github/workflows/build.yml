@@ -40,4 +40,4 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ghcr.io/${{ github.actor }}/payment-service:latest
+          tags: ghcr.io/ketakijahagirdar/payment-service:latest
