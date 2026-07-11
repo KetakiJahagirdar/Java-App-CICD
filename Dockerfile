@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY target/*.jar app.jar
 
-EXPOSE 8080
+COPY opentelemetry-javaagent.jar opentelemetry-javaagent.jar
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java","-javaagent:/app/opentelemetry-javaagent.jar","-jar","/app/app.jar"]
