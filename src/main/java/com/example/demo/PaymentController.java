@@ -16,3 +16,8 @@ public class PaymentController {
         return "Payment Processed";
     }
 }
+@GetMapping("/slow")
+public String slow() throws InterruptedException {
+    Thread.sleep(3000);
+    return "slow response";
+}
