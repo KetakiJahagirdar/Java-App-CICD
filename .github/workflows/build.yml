@@ -43,3 +43,27 @@ jobs:
           tags: |
             ghcr.io/ketakijahagirdar/payment-service:${{ github.run_number }}
             ghcr.io/ketakijahagirdar/payment-service:latest
+
+      - name: Checkout Manifest Repository
+        uses: actions/checkout@v4
+        with:
+          repository: KetakiJahagirdar/payment-service-manifests
+          token: ${{ secrets.MANIFEST_REPO_TOKEN }}
+          path: manifests
+
+      - name: Update Deployment Image
+        run: |
+          sed -i "s/payment-service:[0-9]*/payment-service:${{ github.run_number }}/g" manifests/deployment.yaml
+      
+      - name: Commit and Push Changes
+        run: |
+          cd manifests
+
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+          git add .
+
+          git commit -m "Deploy payment-service:${{ github.run_number }}" || exit 0
+
+          git push
